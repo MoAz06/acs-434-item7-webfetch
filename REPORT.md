@@ -8,8 +8,9 @@ engine, and checked where each WebFetch request actually went.
 `README.md:503` records that userinfo-style URL shapes pass the egress gate on the fetch
 route, because a WebFetch URL reaches AGT's `host_of()` with no parsing.
 `packages/guardian/src/annotate-egress.ts:36-38` lists the three shapes behind that, as
-measured on the shell route. Here those three shapes are sent through WebFetch and measured
-at the host. The Guardian allowed all 35 such requests. Claude Code 2.1.329 refused every
+measured on the shell route, and `:143-148` lists the four that pass on the fetch route:
+the same three, plus the query shape aimed at another dotless host. Here those three shapes
+are sent through WebFetch and measured at the host. The Guardian allowed all 35 such requests. Claude Code 2.1.329 refused every
 one of them itself, and a listener on the target ports saw no connection. On this host
 version these shapes do not reach their target through WebFetch. The protection comes from
 the host's own URL validation, not from the Guardian.
@@ -52,7 +53,9 @@ during that scenario's runs.
 
 s1 to s7 are the three shapes from `annotate-egress.ts:36-38` (a userinfo carrying a `:`,
 an `@` in the query, an `@` in the fragment), pointed at loopback targets the listener can
-observe instead of `exfil.attacker.test`, `metadata` and `internal-api`.
+observe instead of `exfil.attacker.test`, `metadata` and `internal-api`. The fourth
+fetch-route shape in `annotate-egress.ts:148`, `https://evil?x=@docs.anthropic.com`, is the
+query shape with a different dotless host; s2 and s4 send that shape with `localhost`.
 
 | Scenario | URL | Guardian | Host outcome | Listener |
 | --- | --- | --- | --- | --- |
@@ -82,8 +85,8 @@ an empty-body health check I sent before the campaign started.
    denied (`probe-hooks.sh`). Claude Code 2.1.329 refused the dotless host and every
    userinfo URL tried, so none of the seven produced a connection. The dotless refusal was
    measured with `localhost` only. Its text states a general rule ("localhost or other
-   hostnames without a dot"), but `metadata` and `internal-api` themselves were not tried,
-   since neither resolves here. This is a property of the host version, not of ACS, and
+   hostnames without a dot"), but `metadata`, `internal-api` and `evil` themselves were not
+   tried, since none of them resolves here. This is a property of the host version, not of ACS, and
    another host or a later Claude Code may behave differently.
 
 2. **The Guardian's record cannot tell an allowed fetch from a refused one.** c1 (fetched)
@@ -166,9 +169,10 @@ Claude Code at the stub with `ANTHROPIC_BASE_URL`, a placeholder `ANTHROPIC_API_
 - Whether WebFetch connects to a dotted name that resolves to loopback could not be
   measured: the only route to it (c4) is denied by the Guardian first, and every userinfo
   route is refused by the host first.
-- `README.md:503` counts four shapes on the fetch route but does not list them. I tested
-  the three that `annotate-egress.ts:36-38` documents and could not identify the fourth.
-  Other shapes were not tried through the host: percent-encoding, IDN, backslashes, IPv6
+- `README.md:503` counts four shapes on the fetch route without listing them;
+  `annotate-egress.ts:143-148` lists them. Three are the shapes at `:36-38`, tested here as
+  s1 to s7. The fourth, `https://evil?x=@docs.anthropic.com`, is the query shape aimed at
+  another dotless host, which s2 and s4 test with `localhost` rather than `evil`. Other shapes were not tried through the host: percent-encoding, IDN, backslashes, IPv6
   literals, decimal or octal IP forms. A backslash shape was denied at shim level.
 - `localtest.me` and `nip.io` are public wildcard DNS names, so their lookups left the
   machine. The connections themselves stayed on loopback.
