@@ -1,0 +1,5 @@
+{"t": 1795202814.7717407, "port": 80, "peer": "127.0.0.1:52706", "bytes": 123, "proto": "plain", "request_line": "GET /wpad.dat HTTP/1.1", "host": "wpad.home"}
+{"t": 1795202816.3166533, "port": 443, "peer": "127.0.0.1:48174", "bytes": 1, "proto": "plain", "request_line": "\n", "host": null}
+{"t": 1795202816.3178294, "port": 80, "peer": "127.0.0.1:52718", "bytes": 1, "proto": "plain", "request_line": "\n", "host": null}
+{"t": 1795202816.3192837, "port": 8443, "peer": "127.0.0.1:33096", "bytes": 1, "proto": "plain", "request_line": "\n", "host": null}
+{"t": 1795202990.4237494, "port": 8443, "peer": "127.0.0.1:36858", "bytes": 1572, "proto": "tls", "sni": "localtest.me"}

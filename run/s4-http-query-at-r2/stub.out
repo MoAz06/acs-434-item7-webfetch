@@ -1,0 +1,4 @@
+stub model on 127.0.0.1:9100, fetch url 'http://localhost?x=@docs.anthropic.com', log /home/mohamed/acs-434/run/s4-http-query-at-r2/stub-requests.jsonl
+[stub] "POST /v1/messages?beta=true HTTP/1.1" 200 -
+[stub] "POST /v1/messages?beta=true HTTP/1.1" 200 -
+[stub] "POST /v1/messages?beta=true HTTP/1.1" 200 -

@@ -1,0 +1,4 @@
+stub model on 127.0.0.1:9100, fetch url 'https://evil.test/x', log /home/mohamed/acs-434/run/c2-offlist-r2/stub-requests.jsonl
+[stub] "POST /v1/messages?beta=true HTTP/1.1" 200 -
+[stub] "POST /v1/messages?beta=true HTTP/1.1" 200 -
+[stub] "POST /v1/messages?beta=true HTTP/1.1" 200 -

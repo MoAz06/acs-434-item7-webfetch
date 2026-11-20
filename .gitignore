@@ -1,0 +1,8 @@
+# Claude Code's own config and session state for the runs: not evidence, may hold local paths
+claude-config/
+# Generated per run by run_scenario.sh from the shipped settings.json
+project/
+__pycache__/
+# Full model requests: Claude Code's whole system prompt, tool schemas and local paths.
+# harness/slim.py keeps the evidence part in model-saw.jsonl, which is published.
+stub-requests.jsonl
