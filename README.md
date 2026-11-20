@@ -4,10 +4,10 @@ A host-level measurement of the OWASP [Agent Control Standard](https://github.co
 reference Guardian's egress gate on Claude Code's WebFetch tool, for
 [#434](https://github.com/GenAI-Security-Project/agent-control-standard/issues/434), item 7.
 
-**Read [REPORT.md](REPORT.md).** In one line: the userinfo-style URL shapes that
-`README.md:503` records as passing the gate were allowed by the Guardian 35 times out of 35,
-and refused by Claude Code 2.1.329 itself 35 times out of 35, with no connection leaving the
-machine.
+**Read [REPORT.md](REPORT.md).** In one line: the three URL shapes that get past the gate's
+`host_of()` (`annotate-egress.ts:36-38`), sent through WebFetch, were allowed by the
+Guardian 35 times out of 35 and refused by Claude Code 2.1.329 itself 35 times out of 35,
+with no connection reaching the target.
 
 ## What is here
 

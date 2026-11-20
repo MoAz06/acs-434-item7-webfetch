@@ -4,9 +4,10 @@
 Only the model is faked. Claude Code, the ACS hook shim and the Guardian are real.
 
 Behaviour, per request:
-  - the conversation's last user turn carries a tool_result  -> reply with text, end_turn
-  - the request offers a WebFetch tool and has no tool_result -> reply with ONE WebFetch tool_use
-  - anything else (WebFetch's own content-processing call, titles, ...) -> reply with short text
+  - no tools offered (WebFetch's own content-processing call, titles, ...) -> short text
+  - WebFetch already called in this conversation                           -> text, end_turn
+  - WebFetch offered, or already loaded through ToolSearch                 -> ONE WebFetch tool_use
+  - only ToolSearch offered (WebFetch is a deferred tool)                  -> ToolSearch select:WebFetch
 
 The URL to fetch comes from STUB_FETCH_URL. Every request body is appended to
 STUB_LOG (JSONL), so the report can show exactly what reached the "model",
@@ -22,22 +23,6 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 PORT = int(os.environ.get("STUB_PORT", "9100"))
 FETCH_URL = os.environ.get("STUB_FETCH_URL", "https://docs.anthropic.com/en/docs")
 LOG = os.environ.get("STUB_LOG", "stub-requests.jsonl")
-
-
-def last_user_has_tool_result(body):
-    msgs = body.get("messages") or []
-    for m in reversed(msgs):
-        if m.get("role") != "user":
-            continue
-        content = m.get("content")
-        if isinstance(content, list):
-            return any(isinstance(c, dict) and c.get("type") == "tool_result" for c in content)
-        return False
-    return False
-
-
-def offers_webfetch(body):
-    return any((t or {}).get("name") == "WebFetch" for t in body.get("tools") or [])
 
 
 def called_tools(body):
