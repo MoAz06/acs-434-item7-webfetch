@@ -110,8 +110,10 @@ an empty-body health check I sent before the campaign started.
    a shape when it does, was not tested: the model here is scripted.
 
 Points 1 and 3 match the specification and the reference implementation's documentation.
-Point 2 is the documented `README.md:506` gap seen from the audit side; I have not filed
-it separately and will follow the maintainers' call on whether it warrants its own issue.
+Point 2 is the documented `README.md:506` gap seen from the audit side. On #434 it was
+judged covered by that entry, so it has no issue of its own. The signal that would tell a
+fetch from a host refusal is Claude Code's `PostToolUseFailure` event, which this slice
+does not wire (`hosts/claude-code/claude-code.hookmap.yaml:160-161`); see the limits below.
 
 ## Reproduce the runs
 
@@ -176,6 +178,9 @@ Claude Code at the stub with `ANTHROPIC_BASE_URL`, a placeholder `ANTHROPIC_API_
   literals, decimal or octal IP forms. A backslash shape was denied at shim level.
 - `localtest.me` and `nip.io` are public wildcard DNS names, so their lookups left the
   machine. The connections themselves stayed on loopback.
+- Whether Claude Code fires `PostToolUseFailure` when it refuses a WebFetch URL was not
+  tested. That event is not wired in the shipped hook settings
+  (`hosts/claude-code/claude-code.hookmap.yaml:160-161`), so these runs could not see it.
 - Edit, Write, Grep, Glob, MCP output at the result gate, and real MCP servers, the rest
   of item 7, are not covered.
 
